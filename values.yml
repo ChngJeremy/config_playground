@@ -1,0 +1,13 @@
+# values.yaml
+configInline:
+  address-pools:
+  - name: default
+    protocol: layer2
+    addresses:
+    - 192.168.1.154-192.168.1.254
+  # Ensures there is only ever a single IP address
+  # that can be given to the pihole service
+  - name: pihole
+    protocol: layer2
+    addresses:
+    - 192.168.1.153-192.168.1.153
