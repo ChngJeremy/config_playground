@@ -29,6 +29,14 @@ then
   exit $E_NOTROOT
 fi
 
+if [ -z "$1" ]
+then
+  echo "No image file name supplied, using default."
+  imagefile=$DEFAULTif
+else
+  imagefile=$1
+fi
+
 if [ -n "$1" ]                            # If image file name is specified.
 then
   if [ -f "$1" ]                            # If image file exists.
@@ -87,6 +95,17 @@ else
   imagesize="$(stat -c%s "$imagefile")"
 fi
 
+while [ "$imagesize" -gt "0" ]
+do
+  if [ "$imagesize" -gt "$DEFAULTbs" ]
+  then
+    dd if="$imagefile" of="$2" bs="$DEFAULTbs" count=1
+    imagesize=$((imagesize-DEFAULTbs))
+  else
+    dd if="$imagefile" of="$2" bs="$imagesize" count=1
+    imagesize=0
+  fi
+done
 
 if [ ! -e $imagefile ]                    # If image file does not exist.
 then
