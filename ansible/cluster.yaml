@@ -136,3 +136,9 @@
     ansible.builtin.file:
       path: .kube
       state: absent
+  
+  - name: Reload kubectl config
+    path: $HOME/.kube/config
+    state: file
+    mode: '600'
+    backup: yes

@@ -45,3 +45,31 @@
   - name: Uninstall k3s from server
     shell: /usr/local/bin/k3s-uninstall.sh
     when: k3s_present.stat.exists
+  
+- name: Delete k3s configmap
+    shell: kubectl delete configmap k3s-config
+    when: k3s_present.stat.exists
+
+- name: Delete k3s service
+    shell: kubectl delete service k3s-service
+    when: k3s_present.stat.exists
+
+- name: Delete k3s deployment
+    shell: kubectl delete deployment k3s-deployment
+    when: k3s_present.stat.exists
+
+- name: Delete k3s ingress
+    shell: kubectl delete ingress k3s-ingress
+    when: k3s_present.stat.exists
+
+- name: Delete k3s namespace
+    shell: kubectl delete namespace k3s-namespace
+    when: k3s_present.stat.exists
+
+- name: Delete k3s cluster
+    shell: kubectl delete cluster k3s-cluster
+    when: k3s_present.stat.exists
+
+- name: Delete k3s secret
+    shell: kubectl delete secret k3s-secret
+    when: k3s_present.stat.exists
