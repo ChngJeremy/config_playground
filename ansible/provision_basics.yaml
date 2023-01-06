@@ -1,0 +1,52 @@
+# provision zsh and oh-my-zsh
+- name: Provision zsh and oh-my-zsh
+  hosts: all
+  become: yes
+  become_user: root
+  tasks:
+    - name: Install zsh
+      apt:
+        name: zsh
+        state: present
+    - name: Install oh-my-zsh
+      git:
+        repo: git://github.com/robbyrussell/oh-my-zsh.git
+        dest: /home/{{ ansible_user }}/oh-my-zsh
+        update: yes
+
+# Path: config_playground\ansible\provision.yaml
+# provision vim and vim plugins
+- name: Provision vim and vim plugins
+  hosts: all
+  become: yes
+  become_user: root
+  tasks:
+    - name: Install vim
+      apt:
+        name: vim
+        state: present
+    - name: Install vim plugins
+      git:
+        repo: git://github.com/VundleVim/Vundle.vim.git
+        dest: /home/{{ ansible_user }}/.vim/bundle/Vundle.vim
+        update: yes
+
+# Path: config_playground\ansible\provision.yaml
+
+# provision docker and docker-compose
+- name: Provision docker and docker-compose
+  hosts: all
+  become: yes
+  become_user: root
+  tasks:
+    - name: Install docker
+      apt:
+        name: docker.io
+        state: present
+    - name: Install docker-compose
+      apt:
+        name: docker-compose
+        state: present
+  
+# Path: config_playground\ansible\provision.yaml
+
