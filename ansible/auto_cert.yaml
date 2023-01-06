@@ -1,0 +1,60 @@
+# pre-reqs: OpenSSL installed on the host
+
+# variables !!!! change these to your own values !!!!
+- name: Set variables
+  vars:
+    cert_path: /etc/ssl/certs
+    cert_name: jerememe
+    cert_country: SG
+    cert_state: SG
+    cert_locality: SG
+    cert_org: 
+    cert_org_unit: Test
+    cert_email:
+    cert_san: DNS: jerememe.com, DNS: www.jerememe.com  # SAN is optional
+
+# generate openssl private key
+- name: Generate private key
+  openssl_privatekey:
+    path: "{{ cert_path }}/{{ cert_name }}.key"
+    size: 4096
+    type: RSA
+
+# generate openssl certificate signing request
+- name: Generate CSR
+  openssl_csr:
+    path: "{{ cert_path }}/{{ cert_name }}.csr"
+    privatekey_path: "{{ cert_path }}/{{ cert_name }}.key"
+    common_name: "{{ cert_name }}"
+    country_name: "{{ cert_country }}"
+    state_or_province_name: "{{ cert_state }}"
+    locality_name: "{{ cert_locality }}"
+    organization_name: "{{ cert_org }}"
+    organizational_unit_name: "{{ cert_org_unit }}"
+    email_address: "{{ cert_email }}"
+    subject_alt_name: "{{ cert_san }}"
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+
+# generate openssl certificate
+- name: Generate certificate
+  openssl_certificate:
+    path: "{{ cert_path }}/{{ cert_name }}.crt"
+    privatekey_path: "{{ cert_path }}/{{ cert_name }}.key"
+    csr_path: "{{ cert_path}}/{{ cert_name }}.csr"
+    provider: selfsigned
+
+# generate openssl pkcs12
+- name: Generate pkcs12
+  openssl_pkcs12:
+    action: export
+    path: "{{ cert_path
+    }}/{{ cert_name }}.p12"
+    friendly_name: "{{ cert_name }}"
+
+# generate fullchain.pem
+- name: Generate fullchain.pem
+  shell: cat {{ cert_path }}/{{ cert_name }}.crt {{ cert_path }}/{{ cert_name }}.key > {{ cert_path }}/{{ cert_name }}.fullchain.pem
+
+
