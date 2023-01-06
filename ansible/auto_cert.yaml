@@ -11,7 +11,7 @@
     cert_org: 
     cert_org_unit: Test
     cert_email:
-    cert_san: DNS: jerememe.com, IP: !!! IP address of the server !!!
+    cert_san: DNS: jerememe.com, IP: # IP address of the server !!!
 
 # generate openssl private key
 - name: Generate private key
