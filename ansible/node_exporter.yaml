@@ -1,0 +1,46 @@
+# install node_exporter
+- hosts: all
+  become: yes
+  tasks:
+    - name: download node_exporter
+      get_url:
+        url: github.com/prometheus/node_exporter/releases/download/v1.1.2/node_exporter-1.1.2.linux-amd64.tar.gz
+        dest: /tmp/node_exporter-1.1.2.linux-amd64.tar.gz
+    - name: extract node_exporter
+      unarchive:
+        src: /tmp/node_exporter-1.1.2.linux-amd64.tar.gz
+        dest: /tmp
+        remote_src: yes
+    - name: copy node_exporter to /usr/local/bin
+      copy:
+        src: /tmp/node_exporter-1.1.2.linux-amd64/node_exporter
+        dest: /usr/local/bin
+        remote_src: yes
+    - name: create node_exporter user
+      user:
+        name: node_exporter
+        shell: /usr/sbin/nologin
+    - name: create node_exporter service
+      copy:
+        src: /tmp/node_exporter-1.1.2.linux-amd64/node_exporter.service
+        dest: /etc/systemd/system/node_exporter.service
+        remote_src: yes
+    - name: start node_exporter service
+      systemd:
+        name: node_exporter
+        state: started
+        enabled: yes
+
+# check if node_exporter services is running
+    - name: check if node_exporter is running
+      shell: systemctl status node_exporter
+      register: node_exporter_status
+    - name: print node_exporter status
+      debug:
+        msg: "{{ node_exporter_status.stdout }}"
+    - name: check if node_exporter is listening on port 9100
+      shell: netstat -tulpn | grep 9100
+      register: node_exporter_port
+    - name: print node_exporter port
+      debug:
+        msg: "{{ node_exporter_port.stdout }}"
